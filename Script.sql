@@ -36,9 +36,11 @@ INSERT INTO Candidate (dpi, name, party, proposal) VALUES ('6826508959056', 'San
 
 INSERT INTO Person (name, dpi) VALUE ('Pablo', '1234567891234'), ('Paula', '9812345671823');
 
-INSERT INTO Status (table_name, status) VALUES ('Candidate', 1), ('Vote', 1);
+INSERT INTO Status (table_name, status) VALUES ('Candidate', 0), ('Vote', 0);
 
 SELECT * FROM Candidate;
 SELECT * FROM Person;
 SELECT * FROM Vote;
 SELECT * FROM Status;
+
+-- UPDATE Status SET status = 0 WHERE id = 1

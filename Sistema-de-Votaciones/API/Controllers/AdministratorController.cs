@@ -42,6 +42,47 @@ namespace API.Controllers
             }
         }
 
+        [Route("StartProccess")]
+        [HttpPost]
+        public async Task<IActionResult> StartProccess(string tableName)
+        {
+            try
+            {
+                if (_context.Statuses.Any(s => s.TableName.ToLower() == tableName.ToLower()))
+                {
+                    SVModel.Status? status = await
+                        (from s in _context.Statuses
+                         select new SVModel.Status
+                         {
+                             Id = s.Id,
+                             TableName = s.TableName
+                         }).FirstOrDefaultAsync(s => s.TableName == tableName);
+
+                    if (status != null)
+                    {
+                        var tableStatus = await _context.Statuses.FindAsync(status.Id);
+
+                        if (tableStatus != null)
+                        {
+                            tableStatus.Status1 = true;
+
+                            _context.Statuses.Update(tableStatus);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+
+                    return Ok();
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+
         [Route("FinishProcess")]
         [HttpPost]
         public async Task<IActionResult> FinishProcess(string tableName)

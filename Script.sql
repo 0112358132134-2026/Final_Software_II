@@ -42,4 +42,3 @@ SELECT * FROM Candidate;
 SELECT * FROM Person;
 SELECT * FROM Vote;
 SELECT * FROM Status;
-

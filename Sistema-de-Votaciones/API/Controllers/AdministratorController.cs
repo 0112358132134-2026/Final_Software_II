@@ -70,14 +70,16 @@ namespace API.Controllers
                             await _context.SaveChangesAsync();
                         }
                     }
+
+                    return Ok();
                 }
+
+                return BadRequest();
             }
             catch (Exception e)
             {
                 return StatusCode(500, e.Message);
-            }
-
-            return Ok();
+            }            
         }
 
         [Route("GetStatistics")]

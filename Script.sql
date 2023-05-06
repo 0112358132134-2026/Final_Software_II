@@ -31,3 +31,15 @@ CREATE TABLE Status (
     table_name VARCHAR(60) NOT NULL,
     status bit(1) NOT NULL
 );
+
+INSERT INTO Candidate (dpi, name, party, proposal) VALUES ('6826508959056', 'Sandra Torres', 'BIEN', 'Cambio en Guatemala'), ('2273703329979', 'Otto', 'XD', 'Una');
+
+INSERT INTO Person (name, dpi) VALUE ('Pablo', '1234567891234'), ('Paula', '9812345671823');
+
+INSERT INTO Status (table_name, status) VALUES ('Candidate', 1), ('Vote', 1);
+
+SELECT * FROM Candidate;
+SELECT * FROM Person;
+SELECT * FROM Vote;
+SELECT * FROM Status;
+

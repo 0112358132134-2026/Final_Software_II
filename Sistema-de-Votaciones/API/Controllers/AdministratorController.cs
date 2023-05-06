@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
@@ -9,38 +10,81 @@ namespace API.Controllers
     {
         private readonly VotingsystemContext _context = new();
 
-
         [Route("CreateCandidate")]
         [HttpPost]
-        public async Task<SVModel.GeneralResult> CreateCandidate(SVModel.Candidate newCandidate) 
+        public async Task<IActionResult> CreateCandidate(SVModel.Candidate candidate)
         {
-            SVModel.GeneralResult generalResult = new()
-            {
-                Result = false
-            };
-
             try
             {
-                if (!_context.Candidates.Any(c => c.Dpi == newCandidate.Dpi))
+                if (_context.Statuses.Any(s => s.TableName == "Candidate" && s.Status1))
                 {
-                    Candidate candidate = new()
+                    if (!_context.Candidates.Any(c => c.Dpi == candidate.Dpi))
                     {
-                        Dpi = newCandidate.Dpi,
-                        Name = newCandidate.Name,
-                        Party = newCandidate.Party,
-                        Proposal = newCandidate.Proposal
-                    };
+                        Candidate aCandidate = new()
+                        {
+                            Dpi = candidate.Dpi,
+                            Name = candidate.Name,
+                            Party = candidate.Party,
+                            Proposal = candidate.Proposal
+                        };
 
-                    _context.Candidates.Add(candidate);
-                    await _context.SaveChangesAsync();
-                    generalResult.Result = true;
+                        _context.Candidates.Add(aCandidate);
+                        await _context.SaveChangesAsync();
+                        return Ok();
+                    }
+                }
+
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [Route("FinishProcess")]
+        [HttpPost]
+        public async Task<IActionResult> FinishProcess(string tableName)
+        {
+            try
+            {
+                if (_context.Statuses.Any(s => s.TableName.ToLower() == tableName.ToLower()))
+                {
+                    SVModel.Status? status = await
+                        (from s in _context.Statuses
+                         select new SVModel.Status
+                         {
+                             Id = s.Id,
+                             TableName = s.TableName
+                         }).FirstOrDefaultAsync(s => s.TableName == tableName);
+
+                    if (status != null)
+                    {
+                        var tableStatus = await _context.Statuses.FindAsync(status.Id);
+
+                        if (tableStatus != null)
+                        {
+                            tableStatus.Status1 = false;
+
+                            _context.Statuses.Update(tableStatus);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
                 }
             }
             catch (Exception e)
             {
-                generalResult.Status = e.Message;
+                return StatusCode(500, e.Message);
             }
-            return generalResult;
+
+            return Ok();
+        }
+
+        [Route("GetStatistics")]
+        [HttpGet]
+        public async Task<IActionResult> GetStatistics()
+        {
+            return null;
         }
     }
 }

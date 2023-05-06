@@ -12,10 +12,6 @@
 
         public DateTime Date { get; set; }
 
-        public string IpAddress { get; set; } = null!;
-
-        public virtual Candidate Candidate { get; set; } = null!;
-
-        public virtual Person Person { get; set; } = null!;
+        public string IpAddress { get; set; } = null!;        
     }
 }

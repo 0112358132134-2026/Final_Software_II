@@ -1,4 +1,6 @@
-﻿namespace SVModel
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SVModel
 {
     public class Person
     {
@@ -6,8 +8,7 @@
 
         public string Name { get; set; } = null!;
 
-        public string Dpi { get; set; } = null!;
-
-        public virtual ICollection<Vote> Votes { get; set; } = new List<Vote>();
+        [RegularExpression(@"^[1-9]\d{12}$", ErrorMessage = "Enter a validate DPI")]
+        public string Dpi { get; set; } = null!;       
     }
 }

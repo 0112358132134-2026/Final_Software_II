@@ -13,6 +13,14 @@ namespace SVModel
 
         public string Party { get; set; } = null!;
 
-        public string Proposal { get; set; } = null!;        
+        public string Proposal { get; set; } = null!;
+
+        public int TotalVotes { get; set; }
+
+        public int NullVotes { get; set; }
+
+        public int PositiveVotes { get; set; }
+
+        public int NegativeVotes { get; set; }
     }
 }

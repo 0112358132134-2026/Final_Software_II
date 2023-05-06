@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 
 namespace API.Controllers
 {
@@ -82,9 +83,24 @@ namespace API.Controllers
 
         [Route("GetStatistics")]
         [HttpGet]
-        public async Task<IActionResult> GetStatistics()
+        public async Task<IEnumerable<SVModel.Candidate>> GetStatistics()
         {
-            return null;
+            IEnumerable<SVModel.Candidate> candidates = await
+               (from C in _context.Candidates                
+                select new SVModel.Candidate
+                {
+                    Id = C.Id,
+                    Dpi = C.Dpi,
+                    Name = C.Name,
+                    Party = C.Party,
+                    Proposal = C.Proposal,
+                    TotalVotes = _context.Votes.Count(v => v.CandidateId == C.Id),
+                    NullVotes = _context.Votes.Count(v => v.CandidateId == C.Id && v.Vote1 == 0),
+                    PositiveVotes = _context.Votes.Count(v => v.CandidateId == C.Id && v.Vote1 == 1),
+                    NegativeVotes = _context.Votes.Count(v => v.CandidateId == C.Id && v.Vote1 == 2),
+                }).ToListAsync();
+
+            return candidates;
         }
     }
 }
